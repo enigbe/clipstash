@@ -32,4 +32,3 @@ pub struct Clip {
     pub password: field::Password,
     pub hits: field::hits,
 }
-
