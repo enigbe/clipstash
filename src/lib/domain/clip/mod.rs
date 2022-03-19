@@ -15,7 +15,7 @@ pub enum ClipError {
     InvalidDate(String),
     #[error("date parse error: {0}")]
     DateParse(#[from] chrono::ParseError),
-    #[error("id parse error: {0}}")]
+    #[error("id parse error: {0}")]
     Id(#[from] uuid::Error),
     #[error("hits parse error: {0}")]
     Hits(#[from] std::num::TryFromIntError),
@@ -30,5 +30,5 @@ pub struct Clip {
     pub posted: field::Posted,
     pub expires: field::Expires,
     pub password: field::Password,
-    pub hits: field::hits,
+    pub hits: field::Hits,
 }
