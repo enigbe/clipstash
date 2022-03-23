@@ -1,7 +1,7 @@
 use crate::data::DbId;
 use crate::{ClipError, ShortCode, Time};
 use chrono::{NaiveDateTime, Utc};
-use std::convert::TryFrom;
+use std::convert::{From, TryFrom};
 
 /// Database model of a Clip
 #[derive(Debug, sqlx::FromRow)]
@@ -32,7 +32,49 @@ impl TryFrom<Clip> for crate::domain::Clip {
             posted: field::Posted::new(Time::from_naive_utc(clip.posted)),
             expires: field::Expires::new(clip.expires.map(Time::from_naive_utc)),
             password: field::Password::new(clip.password.unwrap_or_default())?,
-            hits: field::Hits::new(u64::try_from(clip.hits)?), 
+            hits: field::Hits::new(u64::try_from(clip.hits)?),
         })
     }
+}
+
+/// Model of a retrieved clip
+pub struct GetClip {
+    pub(in crate::data) shortcode: String,
+}
+
+impl From<ShortCode> for GetClip {
+    fn from(shortcode: ShortCode) -> Self {
+        GetClip {
+            shortcode: shortcode.into_inner(),
+        }
+    }
+}
+
+impl From<String> for GetClip {
+    fn from(shortcode: String) -> Self {
+        GetClip {
+            shortcode: shortcode,
+        }
+    }
+}
+
+/// Model of a new clip
+pub struct NewClip {
+    pub(in crate::data) clip_id: String,
+    pub(in crate::data) shortcode: String,
+    pub(in crate::data) content: String,
+    pub(in crate::data) title: Option<String>,
+    pub(in crate::data) posted: i64,
+    pub(in crate::data) expires: Option<NaiveDateTime>,
+    pub(in crate::data) password: Option<String>,
+}
+
+/// Model of an updated clip
+
+pub struct UpdateClip {
+    pub(in crate::data) shortcode: String,
+    pub(in crate::data) content: String,
+    pub(in crate::data) title: Option<String>,
+    pub(in crate::data) expires: Option<i64>,
+    pub(in crate::data) password: Option<String>,
 }
